@@ -1,0 +1,114 @@
+{% extends 'base.html' %}
+{% block content %}
+  <div class="container">
+    <h2 class="mt-3 mb-2"><i class="bi bi-building-add"></i> Добавить новое помещение</h2>
+    <form method="post">
+      {% csrf_token %}
+      <div class="row">
+        <div class="col-md-4">
+          <div class="input-group mb-3">
+            <label class="input-group-text text-bg-dark border-dark" for="inputGroupFloor">{{ form.floor.label_tag }}</label>
+            {{ form.floor }}
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="input-group mb-3">
+            <span class="input-group-text text-bg-dark border-dark" id="InputNumber">{{ form.number.label_tag }}</span>
+            {{ form.number }}
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-4">
+          <div class="input-group mb-3">
+            <span class="input-group-text text-bg-dark border-dark" id="InputArea">{{ form.area.label_tag }}</span>
+            {{ form.area }}
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="input-group mb-3">
+            <span class="input-group-text text-bg-dark border-dark" id="InputHeight">{{ form.height.label_tag }}</span>
+            {{ form.height }}
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-4">
+          <div class="input-group mb-3">
+            <label class="input-group-text text-bg-dark border-dark" for="inputGroupStatus">{{ form.status.label_tag }}</label>
+            {{ form.status }}
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="input-group mb-3">
+            <label class="input-group-text text-bg-dark border-dark" for="inputGroupTenant">{{ form.tenant.label_tag }}</label>
+            {{ form.tenant }}
+            <a class="btn btn-outline-dark" href="#" id="addTenantLink"><i class="bi bi-plus-circle"></i></a>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-4">
+          <div class="input-group mb-3 date" data-provide="datepicker">
+            <span class="input-group-text text-bg-dark border-dark">{{ form.lease_start.label_tag }}</span>
+            {{ form.lease_start }}
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="input-group mb-3 date" data-provide="datepicker">
+            <span class="input-group-text text-bg-dark border-dark">{{ form.lease_end.label_tag }}</span>
+            {{ form.lease_end }}
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col">
+          <button class="btn btn-outline-dark" type="submit">Сохранить</button>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <script>
+    function toggleTenantLeaseFields() {
+      const statusSelect = document.getElementById("inputGroupStatus");
+      const tenantField = document.getElementById("inputGroupTenant");
+      const leaseStart = document.getElementById("lease_start_datepicker");
+      const leaseEnd = document.getElementById("lease_end_datepicker");
+    
+      if (statusSelect.value === "free") {
+        tenantField.disabled = true;
+        leaseStart.disabled = true;
+        leaseEnd.disabled = true;
+        addTenantLink.classList.add("disabled");
+        addTenantLink.style.pointerEvents = "none";
+        // Очистить значения в браузере:
+        tenantField.value = "";
+        leaseStart.value = "";
+        leaseEnd.value = "";
+        // Поле Арендатор не обязательно
+        tenantField.required = false;
+      } else if (statusSelect.value === "rented") {
+        tenantField.disabled = false;
+        leaseStart.disabled = false;
+        leaseEnd.disabled = false;
+        addTenantLink.classList.remove("disabled");
+        addTenantLink.style.pointerEvents = "auto";
+        tenantField.required = true;
+      } else if (statusSelect.value === "reserved") {
+        tenantField.disabled = false;
+        leaseStart.disabled = false;
+        leaseEnd.disabled = false;
+        addTenantLink.classList.remove("disabled");
+        addTenantLink.style.pointerEvents = "auto";
+        tenantField.required = false;
+      }
+    }
+    
+    document.addEventListener("DOMContentLoaded", function() {
+      toggleTenantLeaseFields();
+      document.getElementById("inputGroupStatus").addEventListener("change", toggleTenantLeaseFields);
+    });
+  </script>
+
+{% endblock %}

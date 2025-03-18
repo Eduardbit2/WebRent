@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Бизнес-центр{% endblock %}</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    {% comment %} <script>
+      $(function() {
+        $('#myDatepicker').datepicker({
+          format: "yyyy-mm-dd",
+          todayHighlight: true,
+          autoclose: true,
+          language: "ru"
+        });
+      });
+    </script> {% endcomment %}
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="/"><i class="bi bi-buildings"></i> Mezon Plaza</a>
+            <div class="collapse navbar-collapse">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link active aria-current="page"" href="{% url 'core:unit_list' %}">
+                        <i class="bi bi-building"></i> Помещения</a>
+                    </li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'core:unit_list' %}">
+                        <i class="bi bi-person-lines-fill"></i> Арендаторы</a>
+                    </li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'core:unit_list' %}">
+                        <i class="bi bi-check2-square"></i> Заявки</a>
+                    </li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'core:unit_list' %}">
+                        <i class="bi bi-bar-chart-line"></i> Статистика</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-person-square"></i> {{ request.user.username }}
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="#">Действие</a></li>
+                            <li><a class="dropdown-item" href="#">Другое действие</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="{% url 'users:logout' %}"><i class="bi bi-box-arrow-right"></i> Выйти</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <div class="container mt-4">
+        {% block content %}{% endblock %}
+    </div>
+</body>
+</html>

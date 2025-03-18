@@ -1,0 +1,46 @@
+<!-- Комментарии -->
+{% load user_filters %}
+<div class="card border-dark">
+    <div class="card-header text-bg-dark text-center"><i class="bi bi-chat-square-text"></i> Комментарии</div>
+        <div class="card-body">
+        <!-- Отображение существующих комментариев -->
+        {% for comment in obj.comments.all %}
+            <div class="card border-dark mb-2">
+                <div class="card-header">
+                    {{ comment.author.first_name }} <small class="text-muted">({{ comment.created_at }})</small>
+                </div>
+                <div class="card-body p-2">
+                    <div class="card-text">
+                        <p>{{ comment.text }}</p>
+                    </div>
+                </div>
+                {% if comment.attachments.all %}
+                    <div class="card-footer">
+                        <i class="bi-paperclip text-secondary"></i>
+                        {% for attachment in comment.attachments.all %}
+                            <a class="link-dark link-offset-2" href="{{ attachment.file.url }}" target="_blank">{{ attachment.filename }}</a>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+        {% empty %}
+            <p>Комментариев пока нет.</p>
+        {% endfor %}
+
+        <!-- Форма добавления комментария -->
+        <form action="{% url comment_url obj_id %}" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="card border-dark">
+                <div class="card-header text-bg-dark">
+                    <label for="id_text"><i class="bi bi-chat-square"></i> Новый комментарий:</label>
+                </div>
+                {{ form.text|addclass:'form-control' }}
+                <div class="card-footer">
+                    <label class="form-label" for="id_files">Прикрепить файлы:</label>
+                    <input class="form-control" type="file" name="files" id="id_files" multiple>
+                </div>
+                <button type="submit" class="btn btn-outline-dark mt-2"><i class="bi bi-plus-square"></i> Добавить комментарий</button>
+            </div>
+        </form>
+    </div>
+</div>

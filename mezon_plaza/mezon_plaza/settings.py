@@ -42,6 +42,8 @@ INSTALLED_APPS = [
     'django_filters',  # Фильтрация API
     'django_extensions',  # Полезные утилиты для разработки
     'core',
+    'users.apps.UsersConfig',
+    'tinymce',
 ]
 
 MIDDLEWARE = [
@@ -68,10 +70,12 @@ REST_FRAMEWORK = {
 
 ROOT_URLCONF = 'mezon_plaza.urls'
 
+TEMPLATES_DIR = os.path.join(BASE_DIR, 'templates')
+
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [TEMPLATES_DIR],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -157,6 +161,19 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+LOGIN_URL = 'users:login'
+LOGIN_REDIRECT_URL = 'core:unit_list'
+
+TINYMCE_DEFAULT_CONFIG = {
+    'height': 500,
+    'width': '100%',
+    'plugins': "image link media",
+    'toolbar': "undo redo | bold italic | alignleft aligncenter alignright | image link",
+    'image_upload_url': '/media/tinymce/',  # Если нужна загрузка изображений
+}
+
+TINYMCE_CDN_URL = "https://cdnjs.cloudflare.com/ajax/libs/tinymce/5.10.7/tinymce.min.js"
 
 # LOGGING = {
 #     'version': 1,

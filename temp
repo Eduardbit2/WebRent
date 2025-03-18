@@ -1,0 +1,20 @@
+<form method="post">
+    {% csrf_token %}
+    <div class="mb-3">
+        <label>Пожарка</label>
+        <textarea name="fire_safety" class="tinymce">{{ unit.fire_safety|default:"" }}</textarea>
+    </div>
+    <div class="mb-3">
+        <label>СКУД</label>
+        <textarea name="access_control" class="tinymce">{{ unit.access_control|default:"" }}</textarea>
+    </div>
+    <div class="mb-3">
+        <label>Вентиляция</label>
+        <textarea name="ventilation" class="tinymce">{{ unit.ventilation|default:"" }}</textarea>
+    </div>
+    <div class="mb-3">
+        <label>Разное</label>
+        <textarea name="misc" class="tinymce">{{ unit.misc|default:"" }}</textarea>
+    </div>
+    <button type="submit" class="btn btn-primary">Сохранить</button>
+</form>

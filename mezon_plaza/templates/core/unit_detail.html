@@ -1,0 +1,116 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="container">
+    <h2 class="mt-3 mb-2"><i class="bi bi-building"></i> Помещение № {{ unit.number }}</h2>
+    
+    <div class="row mt-1 gx-2">
+        <!-- Аренда -->
+        <div class="col-md-6 d-flex">
+            <div class="card border-dark flex-fill">
+                <div class="card-header text-bg-dark"><i class="bi bi-building-exclamation"></i> Аренда</div>
+                <div class="card-body p-2">
+                    <p class="mb-1"><strong>Статус: </strong>{{ unit.get_status_display }}</p>
+                    <p class="mb-1"><strong>Арендатор: </strong><a class="link-dark link-offset-2" href="{% url 'core:tenant_detail' unit.tenant.id %}">{{ unit.tenant.name }}</a></p>
+                    <p class="mb-1"><strong>Дата начала аренды: </strong>{{ unit.lease_start|default:"------" }}</p>
+                    <p class="mb-1"><strong>Дата окончания аренды: </strong>{{ unit.lease_end|default:"------" }}</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Информация -->
+        <div class="col-md-6 d-flex">
+            <div class="card border-dark flex-fill">
+                <div class="card-header text-bg-dark"><i class="bi bi-info-square"></i> Информация</div>
+                <div class="card-body p-1">
+                    <p class="mb-1"><strong>Этаж : </strong>{{ unit.get_floor_display|default:"------" }}</p>
+                    <p class="mb-1"><strong>Площадь: </strong>{{ unit.area|default:"------" }}</p>
+                    <p class="mb-1"><strong>Высота потолков: </strong>{{ unit.height|default:"------" }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Сворачиваемые блоки -->
+    <div class="accordion mt-1" id="tenantAccordion">
+
+        <style>
+            .btn-toggle {
+                background-color: white !important;
+                color: black !important;
+                transition: background-color 0.3s, color 0.3s;
+            }
+            .btn-toggle:hover, .btn-toggle[aria-expanded="true"] {
+                background-color: #343a40 !important;
+                color: white !important;
+                border-color: #343a40 !important;
+            }
+            
+            /* Исправление проблемы с начальным цветом */
+            .accordion-collapse:not(.show) + .btn-toggle {
+                background-color: white !important;
+                color: black !important;
+            }
+        </style>
+
+        <!-- Техническая информация -->
+        <div class="accordion-item">
+            <h2 class="d-grid gap-2" id="headingRequisites">
+                <button class="py-1 btn btn-outline-dark btn-toggle" type="button" data-bs-toggle="collapse" data-bs-target="#collapseRequisites" aria-expanded="false" aria-controls="collapseRequisites">
+                    <i class="bi bi-tools"></i> Техническая информация
+                </button>
+            </h2>
+            <div id="collapseRequisites" class="accordion-collapse collapse" aria-labelledby="headingRequisites">
+                <div class="accordion-body p-2">
+                    <h3>Техническая информация</h3>
+
+                </div>
+            </div>
+        </div>
+        
+        <!-- Заявки -->
+        <div class="accordion-item">
+            <h2 class="d-grid gap-2" id="headingContacts">
+                <button class="py-1 btn btn-outline-dark btn-toggle" type="button" data-bs-toggle="collapse" data-bs-target="#collapseContacts" aria-expanded="false" aria-controls="collapseContacts">
+                    <i class="bi bi-check2-square"></i> Заявки
+                </button>
+            </h2>
+            <div id="collapseContacts" class="accordion-collapse collapse" aria-labelledby="headingContacts">
+                <div class="accordion-body p-2">
+                    <p class="mb-1">Раздел в разработке</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- История Аренды -->
+        <div class="accordion-item">
+            <h2 class="d-grid gap-2" id="headingRental">
+                <button class="py-1 btn btn-outline-dark btn-toggle" type="button" data-bs-toggle="collapse" data-bs-target="#collapseRental" aria-expanded="false" aria-controls="collapseRental">
+                    <i class="bi bi-clock-history"></i> История аренды
+                </button>
+            </h2>
+            <div id="collapseRental" class="accordion-collapse collapse" aria-labelledby="headingRental">
+                <div class="accordion-body p-2">
+                    <p class="mb-1">Раздел в разработке</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Подключение комментариев -->
+    {% include "includes/comments.html" with obj=unit comment_url='core:add_comment_unit' obj_id=unit.id %}
+</div>
+
+<!-- Подключение TinyMCE -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tinymce/5.10.7/tinymce.min.js" referrerpolicy="origin"></script>
+<script>
+    tinymce.init({
+        selector: '.tinymce',
+        plugins: 'image link table media',
+        toolbar: 'undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | outdent indent | image link',
+        menubar: false,
+        height: 300
+    });
+</script>
+
+{% endblock %}

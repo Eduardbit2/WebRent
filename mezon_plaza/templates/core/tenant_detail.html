@@ -1,0 +1,207 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="container">
+    <h2 class="mt-3 mb-2"><i class="bi bi-person-fill"></i> {{ tenant.name }}</h2>
+    
+    <div class="row mt-1 gx-2">
+        <!-- Общая информация -->
+        <div class="col-md-6 d-flex">
+            <div class="card border-dark flex-fill p-0">
+                <div class="card-header text-bg-dark"><i class="bi bi-info-square"></i> Общая информация</div>
+                <div class="card-body p-2">
+                    <p class="mb-1">{{ tenant.description|default:"Нет описания" }}</p>
+            </div>
+            </div>
+        </div>
+        
+        <!-- Контакты -->
+        <div class="col-md-6 d-flex">
+            <div class="card border-dark flex-fill p-">
+                <div class="card-header text-bg-dark"><i class="bi bi-telephone"></i> Контакты</div>
+                <div class="card-body p-1">
+                    <p class="mb-1"><strong>Телефон:</strong> {{ tenant.phone|default:"------" }}</p>
+                    <p class="mb-1"><strong>Email:</strong> {{ tenant.email|default:"------" }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Сворачиваемые блоки -->
+    <div class="accordion mt-1" id="tenantAccordion">
+
+        <style>
+            .btn-toggle {
+                background-color: white !important;
+                color: black !important;
+                transition: background-color 0.3s, color 0.3s;
+            }
+            .btn-toggle:hover, .btn-toggle[aria-expanded="true"] {
+                background-color: #343a40 !important;
+                color: white !important;
+                border-color: #343a40 !important;
+            }
+            
+            /* Исправление проблемы с начальным цветом */
+            .accordion-collapse:not(.show) + .btn-toggle {
+                background-color: white !important;
+                color: black !important;
+            }
+        </style>
+
+        <!-- Реквизиты -->
+        <div class="accordion-item">
+            <h2 class="d-grid gap-2" id="headingRequisites">
+                <button class="py-1 btn btn-outline-dark btn-toggle" type="button" data-bs-toggle="collapse" data-bs-target="#collapseRequisites" aria-expanded="false" aria-controls="collapseRequisites">
+                    <i class="bi bi-person-vcard"></i> Реквизиты
+                </button>
+            </h2>
+            <div id="collapseRequisites" class="accordion-collapse collapse" aria-labelledby="headingRequisites">
+                <div class="accordion-body p-2">
+                    <div class="row">
+                        <div class="col-md-6 border-end">
+                            <p class="mb-1"><strong>ИНН:</strong> {{ tenant.tax_id|default:"------" }}</p>
+                            <p class="mb-1"><strong>КПП:</strong> -----</p>
+                            <p class="mb-1"><strong>Юр. адрес:</strong> {{ tenant.address|default:"------" }}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <p class="mb-1"><strong>Банк:</strong> {{ tenant.bank_name|default:"------" }}</p>
+                            <p class="mb-1"><strong>БИК:</strong> {{ tenant.bik|default:"------" }}</p>
+                            <p class="mb-1"><strong>Расчетный счет:</strong> {{ tenant.account_number|default:"------" }}</p>
+                            <p class="mb-1"><strong>Корр. счет:</strong> {{ tenant.correspondent_account|default:"------" }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Контактные лица -->
+        <div class="accordion-item">
+            <h2 class="d-grid gap-2" id="headingContacts">
+                <button class="py-1 btn btn-outline-dark btn-toggle" type="button" data-bs-toggle="collapse" data-bs-target="#collapseContacts" aria-expanded="false" aria-controls="collapseContacts">
+                    <i class="bi bi-people"></i> Контактные лица
+                </button>
+            </h2>
+            <div id="collapseContacts" class="accordion-collapse collapse" aria-labelledby="headingContacts">
+                <div class="accordion-body p-2">
+                    <table class="table table-sm">
+                        <thead>
+                            <tr class="border-bottom border-dark">
+                                <th scope="col">ФИО</th>
+                                <th scope="col">Должность</th>
+                                <th scope="col">Телефон</th>
+                                <th scope="col">Email</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for contact in tenant.contacts.all %}
+                            <tr>
+                                <th scope="row">{{ contact.name }}</th>
+                                <td> {{ contact.position }} </td>
+                                <td> {{ contact.phone|default:"Не указан" }} </td>
+                                <td> {{ contact.email|default:"Не указан" }} </td>
+                            </tr>
+                            {% empty %}
+                                <p>Нет контактных лиц</p>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+
+                    <!-- Форма добавления контактного лица -->
+                    <form method="post" action="{% url 'core:add_contact' tenant.id %}">
+                        {% csrf_token %}
+                        <div class="card border-dark">
+                            {% comment %} <div class="card-header text-bg-dark">
+                                <label for="id_text">Новое контактное лицо:</label>  
+                            </div> {% endcomment %}
+                            <button class="btn btn-outline-dark" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+                                Сделать сворачиваемый блок по кнопке
+                            </button>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col">
+                                        <div class="input-group input-group-sm mb-2 ">
+                                            <span class="input-group-text text-bg-dark border-dark" id="ContactName">ФИО</span>
+                                            <input type="text" name="name" class="form-control border-dark" aria-describedby="ContactName" required>
+                                        </div>
+                                    </div>
+                                    <div class="col">
+                                        <div class="input-group input-group-sm mb-2">
+                                            <span class="input-group-text text-bg-dark border-dark" id="ContactPosition">Должность</span>
+                                            <input type="text" name="position" class="form-control border-dark" aria-describedby="ContactPosition">
+                                        </div>
+                                    </div>    
+                                </div>
+                                <div class="row">
+                                    <div class="col">
+                                        <div class="input-group input-group-sm mb-2">
+                                            <span class="input-group-text text-bg-dark border-dark" id="ContactPhone">Телефон</span>
+                                            <input type="text" name="phone" class="form-control border-dark" aria-describedby="ContactPhone">
+                                        </div>
+                                    </div>
+                                    <div class="col">
+                                        <div class="input-group input-group-sm mb-2">
+                                            <span class="input-group-text text-bg-dark border-dark" id="ContactEmail">Email</span>
+                                            <input type="email" name="email" class="form-control border-dark" aria-describedby="ContactEmail">
+                                        </div>
+                                    </div>
+                                </div>
+                                <button type="submit" class="btn btn-outline-dark btn-sm mt-2">
+                                    <i class="bi bi-plus-square"></i> Добавить
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Аренда -->
+        <div class="accordion-item">
+            <h2 class="d-grid gap-2" id="headingRental">
+                <button class="py-1 btn btn-outline-dark btn-toggle" type="button" data-bs-toggle="collapse" data-bs-target="#collapseRental" aria-expanded="false" aria-controls="collapseRental">
+                    <i class="bi bi-building"></i> Аренда
+                </button>
+            </h2>
+            <div id="collapseRental" class="accordion-collapse collapse" aria-labelledby="headingRental">
+                <div class="accordion-body p-2">
+                    <table class="table table-sm caption-top">
+                        <caption>Сейчас в аренде:</caption>
+                        <thead>
+                            <tr class="border-bottom border-dark">
+                                <th>Этаж</th>
+                                <th>Номер</th>
+                                <th>Статус</th>
+                                <th>Площадь (кв.м)</th>
+                                <th>Дата начала аренды</th>
+                                <th>Дата окончания аренды</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for unit in tenant.units.all %}
+                            <tr class="{% if unit.status == 'free' %}table-warning{% elif unit.status == 'reserved' %}table-info{% endif %}">
+                                <td>{{ unit.get_floor_display }}</td>
+                                <td><a class="link-dark link-offset-2" href="{% url 'core:unit_detail' unit.id %}">{{ unit.number }}</a></td>
+                                <td>{{ unit.get_status_display }}</td>
+                                <td>{{ unit.area }}</td>
+                                <td>{{ unit.lease_start|default:"—" }}</td>
+                                <td>{{ unit.lease_end|default:"—" }}</td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="6" class="text-center">Нет арендуемых помещений</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    <hr>
+                    <p>История аренды:<p>
+                    <p>Пока пусто</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    {% include "includes/comments.html" with obj=tenant comment_url='core:add_comment_tenant' obj_id=tenant.id %}
+</div>
+{% endblock %}
